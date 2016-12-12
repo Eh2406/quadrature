@@ -1,5 +1,5 @@
-mod double_exponential_integration_constants;
-use double_exponential_integration_constants::*;
+mod double_exponential_constants;
+use double_exponential_constants::*;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Output {
@@ -19,7 +19,8 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     // Apply the linear change of variables x = ct + d
     // $$\int_a^b f(x) dx = c \int_{-1}^1 f( ct + d ) dt$$
     // c = (b-a)/2, d = (a+b)/2
-    integrate_core(f, 0.5 * (b - a), 0.5 * (a + b), target_absolute_error)
+    let c = 0.5 * (b - a);
+    integrate_core(f, c, 0.5 * (a + b), target_absolute_error)
 }
 
 /// Integrate f(cx + d) with the given integration constants
@@ -32,26 +33,21 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
     let mut previous_delta;
     let mut current_delta = ::std::f64::MAX;
 
-    let mut integral = f(c * DOUBLE_EXPONENTIAL_ABCISSAS[0] + d) * DOUBLE_EXPONENTIAL_WEIGHTS[0];
+    let mut integral = f(c * ABCISSAS[0] + d) * WEIGHTS[0];
     num_function_evaluations += 1;
 
-    for i in DOUBLE_EXPONENTIAL_OFFSETS[0]..DOUBLE_EXPONENTIAL_OFFSETS[1] {
-        integral += DOUBLE_EXPONENTIAL_WEIGHTS[i] *
-                    (f(c * DOUBLE_EXPONENTIAL_ABCISSAS[i] + d) +
-                     f(-c * DOUBLE_EXPONENTIAL_ABCISSAS[i] + d));
+    for i in OFFSETS[0]..OFFSETS[1] {
+        integral += WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
     }
-    num_function_evaluations += DOUBLE_EXPONENTIAL_OFFSETS[1] - DOUBLE_EXPONENTIAL_OFFSETS[0];
+    num_function_evaluations += OFFSETS[1] - OFFSETS[0];
 
-    for level in 1..(DOUBLE_EXPONENTIAL_OFFSETS.len() - 1) {
+    for level in 1..(OFFSETS.len() - 1) {
         h *= 0.5;
         let mut new_contribution = 0.0;
-        for i in DOUBLE_EXPONENTIAL_OFFSETS[level]..DOUBLE_EXPONENTIAL_OFFSETS[level + 1] {
-            new_contribution += DOUBLE_EXPONENTIAL_WEIGHTS[i] *
-                                (f(c * DOUBLE_EXPONENTIAL_ABCISSAS[i] + d) +
-                                 f(-c * DOUBLE_EXPONENTIAL_ABCISSAS[i] + d));
+        for i in OFFSETS[level]..OFFSETS[level + 1] {
+            new_contribution += WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
         }
-        num_function_evaluations += DOUBLE_EXPONENTIAL_OFFSETS[level] -
-                                    DOUBLE_EXPONENTIAL_OFFSETS[level];
+        num_function_evaluations += OFFSETS[level] - OFFSETS[level];
         new_contribution *= h;
 
         // difference in consecutive integral estimates
