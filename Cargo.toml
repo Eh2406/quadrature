@@ -2,5 +2,9 @@
 name = "quadrature"
 version = "0.1.0"
 authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
+description = "This is a port of John D. Cook's the Fast Numerical Integration. Other quadrature techniques may be added in the future."
+repository = "https://github.com/Eh2406/quadrature"
+keywords = ["math", "mathematics", "numerics"]
+license = "BSD-2-Clause"
 
 [dependencies]
