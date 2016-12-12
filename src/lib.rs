@@ -79,7 +79,7 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
             // If convergence theory applied perfectly, r would be 2 in the convergence region.
             // r close to 2 is good enough. We expect the difference between this integral estimate
             // and the next one to be roughly delta^2.
-            error_estimate = previous_delta * previous_delta;
+            error_estimate = current_delta * current_delta;
         } else {
             // Not in the convergence region.  Assume only that error is decreasing.
             error_estimate = current_delta;
@@ -111,7 +111,7 @@ mod tests {
     fn demo_function1_works() {
         let o = integrate(|x| (-x / 5.0).exp() * x.powf(-1.0 / 3.0), 0.0, 10.0, 1e-6);
         assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
-        assert!((o.integral - 3.6798142583691758).abs() <= o.error_estimate,
+        assert!((o.integral - 3.6798142583691758).abs() <= 1e-6,
                 "error larger then error_estimate");
     }
 
