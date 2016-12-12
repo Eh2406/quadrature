@@ -34,11 +34,13 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
     let mut previous_delta;
     let mut current_delta = ::std::f64::MAX;
 
-    let mut integral = f(c * ABCISSAS[0] + d) * WEIGHTS[0];
+    let mut integral = WEIGHTS[0] * f(c * ABCISSAS[0] + d);
     num_function_evaluations += 1;
 
+    let func = |i| WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
+
     for i in OFFSETS[0]..OFFSETS[1] {
-        integral += WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
+        integral += func(i);
     }
     num_function_evaluations += OFFSETS[1] - OFFSETS[0];
 
@@ -46,9 +48,9 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
         h *= 0.5;
         let mut new_contribution = 0.0;
         for i in OFFSETS[level]..OFFSETS[level + 1] {
-            new_contribution += WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
+            new_contribution += func(i);
         }
-        num_function_evaluations += OFFSETS[level] - OFFSETS[level];
+        num_function_evaluations += OFFSETS[level + 1] - OFFSETS[level];
         new_contribution *= h;
 
         // difference in consecutive integral estimates
@@ -58,7 +60,7 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 
         // Once convergence kicks in, error is approximately squared at each step.
         // Determine whether we're in the convergent region by looking at the trend in the error.
-        if level == 1 {
+        if level <= 1 {
             continue; // previousDelta meaningless, so cannot check convergence.
         }
 
@@ -98,6 +100,13 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn trivial_function_works() {
+        let o = integrate(|_| 0.5, -1.0, 1.0, 1e-14);
+        assert!(o.error_estimate <= 1e-14,
+                "error_estimate larger then asked");
+    }
+
     #[test]
     fn demo_function1_works() {
         let o = integrate(|x| (-x / 5.0).exp() * x.powf(-1.0 / 3.0), 0.0, 10.0, 1e-6);
