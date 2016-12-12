@@ -1,6 +1,6 @@
 [package]
 name = "quadrature"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
 description = "This is a port of John D. Cook's the Fast Numerical Integration. Other quadrature techniques may be added in the future."
 repository = "https://github.com/Eh2406/quadrature"
