@@ -27,6 +27,7 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
 fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64
 {
+    let target_absolute_error = 0.25 * target_absolute_error / c;
     let mut error_estimate = ::std::f64::MAX;
     let mut h = 1.0;
     let mut num_function_evaluations = 0;
@@ -82,10 +83,9 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
             error_estimate = current_delta;
         }
 
-        if error_estimate < 0.1 * target_absolute_error {
+        if error_estimate < target_absolute_error {
             break;
         }
-
     }
 
     Output {
@@ -106,7 +106,7 @@ mod tests {
         let o = integrate(demo_function1, 0.0, 10.0, 1e-6);
         assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
         assert!((o.integral - 3.6798142583691758).abs() <= o.error_estimate,
-                "error larger error_estimate");
+                "error larger then error_estimate");
     }
 
     fn demo_function2(x: f64) -> f64 {
@@ -117,7 +117,17 @@ mod tests {
         let o = integrate(demo_function2, 0.0, 1.0, 1e-6);
         assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
         assert!((o.integral - 0.41768525592055004).abs() <= o.error_estimate,
-                "error larger error_estimate");
+                "error larger then error_estimate");
+    }
+
+    fn demo_function3(x: f64) -> f64 {
+        let x = x / 1000.0;
+        (-x / 5.0).exp() * x.powf(-1.0 / 3.0)
+    }
+    #[test]
+    fn demo_function3_works() {
+        let o = integrate(demo_function3, 0.0, 10000.0, 1e-6);
+        assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
     }
 
     fn demo_bad_function1(x: f64) -> f64 {
@@ -128,7 +138,7 @@ mod tests {
         let o = integrate(demo_bad_function1, 0.0, 1.0, 1e-6);
         assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
         assert!((o.integral - 0.50251256281407035).abs() <= o.error_estimate,
-                "error larger error_estimate");
+                "error larger then error_estimate");
     }
 
     fn demo_bad_function2(x: f64) -> f64 {
@@ -138,7 +148,7 @@ mod tests {
     fn demo_bad_function2_works() {
         let o = integrate(demo_bad_function2, -1.0, 1.0, 1e-6);
         assert!((o.integral - 1.0).abs() <= o.error_estimate,
-                "error larger error_estimate");
+                "error larger then error_estimate");
     }
 
     fn demo_bad_function3(x: f64) -> f64 {
@@ -148,6 +158,6 @@ mod tests {
     fn demo_bad_function3_works() {
         let o = integrate(demo_bad_function3, -1.0, 1.0, 1e-6);
         assert!((o.integral - 0.5).abs() <= o.error_estimate,
-                "error larger error_estimate");
+                "error larger then error_estimate");
     }
 }
