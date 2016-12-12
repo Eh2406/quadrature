@@ -1,0 +1,6 @@
+[package]
+name = "quadrature"
+version = "0.1.0"
+authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
+
+[dependencies]
