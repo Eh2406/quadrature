@@ -29,32 +29,24 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 {
     let target_absolute_error = 0.25 * target_absolute_error / c;
     let mut error_estimate = ::std::f64::MAX;
-    let mut h = 1.0;
-    let mut num_function_evaluations = 0;
-    let mut previous_delta;
+    let mut num_function_evaluations;
     let mut current_delta = ::std::f64::MAX;
 
     let mut integral = WEIGHTS[0] * f(c * ABCISSAS[0] + d);
-    num_function_evaluations += 1;
 
     let func = |i| WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
 
-    for i in OFFSETS[0]..OFFSETS[1] {
-        integral += func(i);
-    }
-    num_function_evaluations += OFFSETS[1] - OFFSETS[0];
+    integral += (OFFSETS[0]..OFFSETS[1]).map(&func).fold(0.0, |sum, x| sum + x);
+    num_function_evaluations = 2 * OFFSETS[1] - 1;
 
     for level in 1..(OFFSETS.len() - 1) {
-        h *= 0.5;
-        let mut new_contribution = 0.0;
-        for i in OFFSETS[level]..OFFSETS[level + 1] {
-            new_contribution += func(i);
-        }
-        num_function_evaluations += OFFSETS[level + 1] - OFFSETS[level];
-        new_contribution *= h;
+        let new_contribution = (OFFSETS[level]..OFFSETS[level + 1])
+            .map(&func)
+            .fold(0.0, |sum, x| sum + x) * 0.5f64.powi(level as i32);
+        num_function_evaluations = 2 * OFFSETS[level + 1] - 1;
 
         // difference in consecutive integral estimates
-        previous_delta = current_delta;
+        let previous_delta_ln = current_delta.ln();
         current_delta = (0.5 * integral - new_contribution).abs();
         integral = 0.5 * integral + new_contribution;
 
@@ -73,7 +65,7 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
             break;
         }
         // previousDelta != 0 or would have been kicked out previously
-        let r = current_delta.ln() / previous_delta.ln();
+        let r = current_delta.ln() / previous_delta_ln;
 
         if r > 1.9 && r < 2.1 {
             // If convergence theory applied perfectly, r would be 2 in the convergence region.
