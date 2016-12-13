@@ -29,17 +29,14 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 {
     let target_absolute_error = 0.25 * target_absolute_error / c;
     let mut error_estimate = ::std::f64::MAX;
-    let mut num_function_evaluations;
+    let mut num_function_evaluations = 1;
     let mut current_delta = ::std::f64::MAX;
 
-    let mut integral = WEIGHTS[0] * f(c * ABCISSAS[0] + d);
+    let mut integral = 2.0 * WEIGHTS[0] * f(c * ABCISSAS[0] + d);
 
     let func = |i| WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
 
-    integral += (OFFSETS[0]..OFFSETS[1]).map(&func).fold(0.0, |sum, x| sum + x);
-    num_function_evaluations = 2 * OFFSETS[1] - 1;
-
-    for level in 1..(OFFSETS.len() - 1) {
+    for level in 0..(OFFSETS.len() - 1) {
         let new_contribution = (OFFSETS[level]..OFFSETS[level + 1])
             .map(&func)
             .fold(0.0, |sum, x| sum + x) * 0.5f64.powi(level as i32);
