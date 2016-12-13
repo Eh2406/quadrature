@@ -32,15 +32,17 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
     let mut num_function_evaluations = 1;
     let mut current_delta = ::std::f64::MAX;
 
-    let mut integral = 2.0 * WEIGHTS[0] * f(c * ABCISSAS[0] + d);
+    let mut integral = 2.0 * 1.5707963267948966192 * f(c * 0.0 + d);
 
-    let func = |i| WEIGHTS[i] * (f(c * ABCISSAS[i] + d) + f(-c * ABCISSAS[i] + d));
+    let func = |(w, x)| w * (f(c * x + d) + f(-c * x + d));
 
-    for level in 0..(OFFSETS.len() - 1) {
-        let new_contribution = (OFFSETS[level]..OFFSETS[level + 1])
+    for (level, (&ws, &xs)) in WEIGHTS.iter().zip(ABCISSAS.iter()).enumerate() {
+        debug_assert_eq!(ws.len(), xs.len());
+        let new_contribution = ws.iter()
+            .zip(xs.iter())
             .map(&func)
             .fold(0.0, |sum, x| sum + x) * 0.5f64.powi(level as i32);
-        num_function_evaluations = 2 * OFFSETS[level + 1] - 1;
+        num_function_evaluations += 2 * ws.len();
 
         // difference in consecutive integral estimates
         let previous_delta_ln = current_delta.ln();
