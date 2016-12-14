@@ -29,8 +29,6 @@ ABCISSAS2 = np.tanh(np.pi/2 * np.sinh(u2))
 print ABCISSAS2[int(len(ABCISSAS2)/2):]
 WEIGHTS2 = np.pi/2.0 * h2 *(np.cosh(u2)/ ((np.cosh(np.pi/2 * np.sinh(u2)))**2))
 print WEIGHTS2[int(len(WEIGHTS2)/2):]
-## so it looks like the original code has the WEIGHTS / h stored in constants
-## then facters in 1 / h in the code
 
 # and 3st layer has 12 fn cals more
 u3 = np.linspace(-3, 3, len(u2) + 12)
@@ -39,5 +37,3 @@ ABCISSAS3 = np.tanh(np.pi/2 * np.sinh(u3))
 print ABCISSAS3[int(len(ABCISSAS3)/2):]
 WEIGHTS3 = np.pi/2.0 * h3 *(np.cosh(u3)/ ((np.cosh(np.pi/2 * np.sinh(u3)))**2))
 print WEIGHTS3[int(len(WEIGHTS3)/2):]
-## so it looks like the original code has the WEIGHTS / h stored in constants
-## then facters in 1 / h in the code

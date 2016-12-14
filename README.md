@@ -5,5 +5,8 @@ I have been testing against `rust 1.0` with:
 ```cmd
 > rustup override set 1.0.0
 > cargo test
+> rustup override set nightly
+> cargo test
+> cargo bench
 ```
 I think bumping rust version is a breaking change, and will be respected in semver.
