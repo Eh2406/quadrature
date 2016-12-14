@@ -36,7 +36,7 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 
     let func = |(w, x)| w * (f(c * x + d) + f(-c * x + d));
 
-    for (level, (&ws, &xs)) in WEIGHTS.iter().zip(ABCISSAS.iter()).enumerate() {
+    for (&ws, &xs) in WEIGHTS.iter().zip(ABCISSAS.iter()) {
         debug_assert_eq!(ws.len(), xs.len());
         let new_contribution = ws.iter()
             .zip(xs.iter())
@@ -51,7 +51,8 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 
         // Once convergence kicks in, error is approximately squared at each step.
         // Determine whether we're in the convergent region by looking at the trend in the error.
-        if level <= 1 {
+        if num_function_evaluations <= 13 {
+            // level <= 1
             continue; // previousDelta meaningless, so cannot check convergence.
         }
 
