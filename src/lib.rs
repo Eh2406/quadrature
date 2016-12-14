@@ -41,7 +41,7 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
         let new_contribution = ws.iter()
             .zip(xs.iter())
             .map(&func)
-            .fold(0.0, |sum, x| sum + x) * 0.5f64.powi(level as i32);
+            .fold(0.0, |sum, x| sum + x);
         num_function_evaluations += 2 * ws.len();
 
         // difference in consecutive integral estimates
