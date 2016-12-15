@@ -15,23 +15,23 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     // $$\int_a^b f(x) dx = c \int_{-1}^1 f( ct + d ) dt$$
     // c = (b-a)/2, d = (a+b)/2
     let c = 0.5 * (b - a);
-    integrate_core(f, c, 0.5 * (a + b), target_absolute_error)
+    let d = 0.5 * (a + b);
+    integrate_core(|x| f(c * x + d), 0.25 * target_absolute_error / c).scale(c)
 }
 
-/// Integrate f(cx + d) with the given integration constants
-fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
+/// Integrate f(x) from [-1.0, 1.0]
+fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64
 {
-    let target_absolute_error = 0.25 * target_absolute_error / c;
     let mut error_estimate = ::std::f64::MAX;
     let mut num_function_evaluations = 1;
     let mut current_delta = ::std::f64::MAX;
 
-    let mut integral = 2.0 * ::std::f64::consts::FRAC_PI_2 * f(c * 0.0 + d);
+    let mut integral = 2.0 * ::std::f64::consts::FRAC_PI_2 * f(0.0);
 
     for &weight in &WEIGHTS {
         let new_contribution = weight.iter()
-            .map(|&(w, x)| w * (f(c * x + d) + f(-c * x + d)))
+            .map(|&(w, x)| w * (f(x) + f(-x)))
             .fold(0.0, |sum, x| sum + x);
         num_function_evaluations += 2 * weight.len();
 
@@ -75,8 +75,8 @@ fn integrate_core<F>(f: F, c: f64, d: f64, target_absolute_error: f64) -> Output
 
     Output {
         num_function_evaluations: num_function_evaluations as u32,
-        error_estimate: c * error_estimate,
-        integral: c * integral,
+        error_estimate: error_estimate,
+        integral: integral,
     }
 }
 
