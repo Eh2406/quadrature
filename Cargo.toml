@@ -7,5 +7,6 @@ repository = "https://github.com/Eh2406/quadrature"
 documentation = "https://docs.rs/quadrature/"
 keywords = ["math", "mathematics", "numerics"]
 license = "BSD-2-Clause"
+build = "build.rs"
 
 [dependencies]

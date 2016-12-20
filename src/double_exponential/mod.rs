@@ -1,5 +1,31 @@
-mod constants;
-use self::constants::*;
+//! The double exponential rule is based on the observation that the trapezoid rule converges
+//! very rapidly for functions on the entire real line that go to zero like exp( - exp(t) ).
+//! The change of variables x = tanh( pi sinh(t) /2) transforms an integral over [-1, 1]
+//! into an integral with integrand suited to the double exponential rule.
+//!
+//! The transformed integral is infinite, but we truncate the domain of integration to [-3, 3].
+//! The limit '3' was chosen for two reasons: for t = 3, the transformed x values
+//! are nearly equal to 1 for 12 or more significant figures.  Also, for t = 3, the
+//! smallest weights are 12 orders of magnitude smaller than the largest weights; setting
+//! the cutoff larger than 3 would not have a significant impact on the integral value
+//! unless there is a strong singularity at one of the end points.
+//!
+//! The change of variables x(t) is an odd function, i.e. x(-t) = -x(t), and so we need only
+//! store the positive x values.  Also, the derivative w(t) = x'(t) is even, i.e. w(-t) = w(t),
+//! and so we need only store the weights corresponding to positive values of x.
+//!
+//! The integration first applies the trapezoid rule to [-3, 3] in steps of size 1.
+//! Then it subsequently cuts the step size in half each time, comparing the results.
+//! Integration stops when subsequent iterations are close enough together or the maximum
+//! integration points have been used.
+//! By cutting h in half, the previous integral can be reused; we only need evaluate the
+//! integrand at the newly added points.
+//!
+//! Finally, note that we're not strictly using the trapezoid rule: we don't treat the
+//! end points differently.  This is because we assume the values at the ends of the interval
+//! hardly matter due to the rapid decay of the integrand.
+
+include!(concat!(env!("OUT_DIR"), "/double_exponential_constants.rs"));
 
 use super::Output;
 
