@@ -10,4 +10,5 @@ I have been testing against `rust 1.0` with:
 > cargo test
 > cargo bench
 ```
+It is also tested on travis [![Build Status](https://travis-ci.org/Eh2406/quadrature.svg?branch=master)](https://travis-ci.org/Eh2406/quadrature).
 I think bumping rust version is a breaking change, and will be respected in semver.

@@ -1,0 +1,9 @@
+sudo: false
+language: rust
+rust:
+  - nightly
+  - beta
+  - stable
+  # and the first stable one (this should be bumped as the minimum
+  # Rust version required changes)
+  - 1.0.0
