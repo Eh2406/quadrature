@@ -8,6 +8,17 @@ use super::Output;
 /// a is left limit of integration.
 /// b is right limit of integration
 /// target_absolute_error is the desired bound on error
+///
+/// # Examples
+///
+/// ```
+/// use quadrature::integrate;
+/// fn integrand(x: f64) -> f64 {
+///     (-x / 5.0).exp() * x.powf(-1.0 / 3.0)
+/// }
+/// let o = integrate(integrand , 0.0, 10.0, 1e-6);
+/// assert!((o.integral - 3.6798142583691758).abs() <= 1e-6);
+/// ```
 pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64
 {
