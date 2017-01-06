@@ -1,4 +1,5 @@
 mod constants;
+
 use self::constants::*;
 
 use super::Output;
@@ -27,7 +28,12 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     // c = (b-a)/2, d = (a+b)/2
     let c = 0.5 * (b - a);
     let d = 0.5 * (a + b);
-    integrate_core(|x| f(c * x + d), 0.25 * target_absolute_error / c).scale(c)
+    integrate_core(|x| {
+                       let out = f(c * x + d);
+                       if out.is_finite() { out } else { 0.0 }
+                   },
+                   0.25 * target_absolute_error / c)
+        .scale(c)
 }
 
 /// Integrate f(x) from [-1.0, 1.0]
@@ -64,6 +70,7 @@ fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
         // times than necessary.  But no infinite loop can result since there is
         // an upper bound on the loop variable.
         if current_delta == 0.0 {
+            error_estimate = 0.0;
             break;
         }
         // previousDelta != 0 or would have been kicked out previously
@@ -94,17 +101,23 @@ fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn trivial_function_works() {
         let o = integrate(|_| 0.5, -1.0, 1.0, 1e-14);
         assert!(o.error_estimate <= 1e-14,
-                "error_estimate larger then asked");
+                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
+                o.error_estimate,
+                1e-14);
     }
 
     #[test]
     fn demo_function1_works() {
         let o = integrate(|x| (-x / 5.0).exp() * x.powf(-1.0 / 3.0), 0.0, 10.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
+        assert!(o.error_estimate <= 1e-6,
+                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
+                o.error_estimate,
+                1e-6);
         assert!((o.integral - 3.6798142583691758).abs() <= 1e-6,
                 "error larger then error_estimate");
     }
@@ -112,7 +125,10 @@ mod tests {
     #[test]
     fn demo_function2_works() {
         let o = integrate(|x| (1.0 - x).powf(5.0) * x.powf(-1.0 / 3.0), 0.0, 1.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
+        assert!(o.error_estimate <= 1e-6,
+                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
+                o.error_estimate,
+                1e-6);
         assert!((o.integral - 0.41768525592055004).abs() <= o.error_estimate,
                 "error larger then error_estimate");
     }
@@ -123,13 +139,19 @@ mod tests {
                           0.0,
                           10000.0,
                           1e-6);
-        assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
+        assert!(o.error_estimate <= 1e-6,
+                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
+                o.error_estimate,
+                1e-6);
     }
 
     #[test]
     fn demo_bad_function1_works() {
         let o = integrate(|x| (1.0 - x).powf(0.99), 0.0, 1.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6, "error_estimate larger then asked");
+        assert!(o.error_estimate <= 1e-6,
+                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
+                o.error_estimate,
+                1e-6);
         assert!((o.integral - 0.50251256281407035).abs() <= o.error_estimate,
                 "error larger then error_estimate");
     }
