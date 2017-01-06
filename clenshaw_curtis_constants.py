@@ -5,7 +5,7 @@ import numpy as np
 # 2.4
 def weights(n):
     n -= 1
-    v = np.linspace(0, 1, n + 1) * np.pi
+    v = np.linspace(1, 0, n + 1) * np.pi
     j = np.array(range(1, n / 2 + 1))[:, None]
 
     b = 2. * np.ones(j.shape)
@@ -52,6 +52,43 @@ def clencurt(n1):
         w = np.hstack((F[0, 0], 2 * F[1:n, 0], F[n, 0]))
     return x, w
 
+
+def values(i):
+    n = 2 ** i
+    if n >= 1:
+        yield n / 2
+    if n >= 3:
+        yield 0
+        yield n
+    h = n / 2
+    while h >= 2:
+        k = h / 2
+        while k <= n:
+            yield k
+            k += h
+        h /= 2
+
+
+def haft_values(i):
+    n = 2 ** i
+    if n >= 1:
+        yield n / 2
+    if n >= 3:
+        yield n
+    h = n / 2
+    while h >= 2:
+        k = h / 2 + n / 2
+        while k <= n:
+            yield k
+            k += h
+        h /= 2
+
+max_i = 8
+print "pub const ABCISSAS: &'static [f64] = &", list(weights(2 ** max_i + 1)[0][list(haft_values(max_i))]), ";"
+print "pub const WEIGHTS: [&'static [f64];", max_i - 1, "] = ["
+for w in [weights(2 ** i + 1)[1][list(haft_values(i))] for i in range(2, max_i + 1)]:
+    print "&", list(w), ","
+print "];"
 
 for i in range(1, 5):
     n = 2 ** i + 1
