@@ -1,4 +1,5 @@
 pub mod double_exponential;
+pub mod clenshaw_curtis;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Output {
