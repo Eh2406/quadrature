@@ -2,7 +2,7 @@
 name = "quadrature"
 version = "0.1.1"
 authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
-description = "This is a port of John D. Cook's the Fast Numerical Integration. This library is pure safe rust, and cross-platform. The double exponential algorithm is naturally adaptive, and does not allocate."
+description = "This provides several fast numerical integration methods. This library is pure safe rust, and cross-platform. The double exponential algorithm is naturally adaptive, and does not allocate."
 repository = "https://github.com/Eh2406/quadrature"
 readme = "README.md"
 documentation = "https://docs.rs/quadrature/"

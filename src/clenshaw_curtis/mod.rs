@@ -1,3 +1,8 @@
+//! The `clenshaw_curtis` module provides a `integrate` function with the same signature as `quadrature::integrate`.
+//! The implemented variant of clenshaw curtis quadrature is adaptive, however the weights change for each adaptation. This unfortunately means that the sum needs to be recalculated for each layer of adaptation.
+//! It also does not allocate on the heap, however it does use a `[f64; 129]` to store the function values. It has a hard coded maximum of approximately 257 function evaluations. This guarantees that the algorithm will return.
+//! The clenshaw curtis algorithm exactly integrates polynomials of order N. This implementation starts with an N of approximately 5 and increases up to an N of approximately 257. In general the error in the algorithm decreases exponentially in the number of function evaluations. In summery clenshaw curtis will in general use **more stack space** and **run slower** than the double exponential algorithm, unless clenshaw curtis can get the exact solution.
+
 mod constants;
 use self::constants::*;
 
@@ -12,12 +17,12 @@ use super::Output;
 /// # Examples
 ///
 /// ```
-/// use quadrature::integrate;
+/// use quadrature::clenshaw_curtis::integrate;
 /// fn integrand(x: f64) -> f64 {
 ///     (-x / 5.0).exp() * x.powf(-1.0 / 3.0)
 /// }
 /// let o = integrate(integrand , 0.0, 10.0, 1e-6);
-/// assert!((o.integral - 3.6798142583691758).abs() <= 1e-6);
+/// assert!((o.integral - 3.6798142583691758).abs() <= o.error_estimate)
 /// ```
 pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64

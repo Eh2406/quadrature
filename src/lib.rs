@@ -1,3 +1,8 @@
+//! The primary function of this library is `integrate`, witch uses the double exponential algorithm.
+//! It is a port of the [Fast Numerical Integration](https://www.codeproject.com/kb/recipes/fastnumericalintegration.aspx) from c++ to rust. The original code is by John D. Cook, and is licensed under the BSD.
+//!
+//! Other Algorithms are provided in modules.
+
 pub mod double_exponential;
 pub mod clenshaw_curtis;
 
