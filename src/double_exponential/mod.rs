@@ -36,9 +36,9 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
     let c = 0.5 * (b - a);
     let d = 0.5 * (a + b);
     integrate_core(|x| {
-                       let out = f(c * x + d);
-                       if out.is_finite() { out } else { 0.0 }
-                   },
+        let out = f(c * x + d);
+        if out.is_finite() { out } else { 0.0 }
+    },
                    0.25 * target_absolute_error / c)
         .scale(c)
 }
@@ -109,71 +109,11 @@ fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
 mod tests {
     use super::*;
 
-    #[test]
-    fn trivial_function_works() {
-        let o = integrate(|_| 0.5, -1.0, 1.0, 1e-14);
-        assert!(o.error_estimate <= 1e-14,
-                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
-                o.error_estimate,
-                1e-14);
-    }
-
-    #[test]
-    fn demo_function1_works() {
-        let o = integrate(|x| (-x / 5.0).exp() * x.powf(-1.0 / 3.0), 0.0, 10.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6,
-                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
-                o.error_estimate,
-                1e-6);
-        assert!((o.integral - 3.6798142583691758).abs() <= 1e-6,
-                "error larger then error_estimate");
-    }
-
-    #[test]
-    fn demo_function2_works() {
-        let o = integrate(|x| (1.0 - x).powf(5.0) * x.powf(-1.0 / 3.0), 0.0, 1.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6,
-                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
-                o.error_estimate,
-                1e-6);
-        assert!((o.integral - 0.41768525592055004).abs() <= o.error_estimate,
-                "error larger then error_estimate");
-    }
-
-    #[test]
-    fn demo_function3_works() {
-        let o = integrate(|x| (-x / 5000.0).exp() * (x / 1000.0).powf(-1.0 / 3.0),
-                          0.0,
-                          10000.0,
-                          1e-6);
-        assert!(o.error_estimate <= 1e-6,
-                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
-                o.error_estimate,
-                1e-6);
-    }
-
-    #[test]
-    fn demo_bad_function1_works() {
-        let o = integrate(|x| (1.0 - x).powf(0.99), 0.0, 1.0, 1e-6);
-        assert!(o.error_estimate <= 1e-6,
-                "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
-                o.error_estimate,
-                1e-6);
-        assert!((o.integral - 0.50251256281407035).abs() <= o.error_estimate,
-                "error larger then error_estimate");
-    }
-
-    #[test]
-    fn demo_bad_function2_works() {
-        let o = integrate(|x| x.abs(), -1.0, 1.0, 1e-6);
-        assert!((o.integral - 1.0).abs() <= o.error_estimate,
-                "error larger then error_estimate");
-    }
-
-    #[test]
-    fn demo_bad_function3_works() {
-        let o = integrate(|x| (0.5 - x.abs()).abs(), -1.0, 1.0, 1e-6);
-        assert!((o.integral - 0.5).abs() <= o.error_estimate,
-                "error larger then error_estimate");
-    }
+    unit_test!(trivial_function_works = |_| 0.5; -1.0..1.0; 1e-14);
+    unit_test!(demo_function1_works = |x| (-x / 5.0).exp() * x.powf(-1.0 / 3.0); 0.0..10.0; 1e-6 => 3.6798142583691758);
+    unit_test!(demo_function2_works = |x| (1.0 - x).powf(5.0) * x.powf(-1.0 / 3.0); 0.0..1.0; 1e-6 => 0.41768525592055004);
+    unit_test!(demo_function3_works = |x| (-x / 5000.0).exp() * (x / 1000.0).powf(-1.0 / 3.0); 0.0..10000.0; 1e-6);
+    unit_test!(demo_bad_function1_works = |x| (1.0 - x).powf(0.99); 0.0..1.0; 1e-6 => 0.50251256281407035);
+    unit_test!(demo_bad_function2_works = |x| x.abs(); -1.0..1.0; 1e-6 => 1.0; 385);
+    unit_test!(demo_bad_function3_works = |x| (0.5 - x.abs()).abs(); -1.0..1.0; 1e-6 => 0.5; 385);
 }
