@@ -28,6 +28,18 @@ fn double_exponential_demo_function2(b: &mut Bencher) {
 }
 
 #[bench]
+fn double_exponential_demo_circle(b: &mut Bencher) {
+    b.iter(|| double_exponential::integrate(|x| ((1.0-(x.powi(2))).sqrt()).abs(), 0.0, 1.0, 1e-6));
+}
+
+#[bench]
+fn double_exponential_demo_bad_circle(b: &mut Bencher) {
+    b.iter(|| double_exponential::integrate(|x| ((1.0-(x.powi(2))).sqrt()-0.7).abs(), 0.0, 1.0, 1e-6));
+}
+
+
+
+#[bench]
 fn clenshaw_curtis_trivial_function(b: &mut Bencher) {
     b.iter(|| clenshaw_curtis::integrate(|_| 0.5, -1.0, 1.0, 1e-14));
 }
@@ -45,4 +57,14 @@ fn clenshaw_curtis_demo_function1(b: &mut Bencher) {
 #[bench]
 fn clenshaw_curtis_demo_function2(b: &mut Bencher) {
     b.iter(|| clenshaw_curtis::integrate(|x| (1.0 - x).powf(5.0) * x.powf(-1.0 / 3.0), 0.0, 1.0, 1e-6));
+}
+
+#[bench]
+fn clenshaw_curtis_demo_circle(b: &mut Bencher) {
+    b.iter(|| clenshaw_curtis::integrate(|x| ((1.0-(x.powi(2))).sqrt()).abs(), 0.0, 1.0, 1e-6));
+}
+
+#[bench]
+fn clenshaw_curtis_demo_bad_circle(b: &mut Bencher) {
+    b.iter(|| clenshaw_curtis::integrate(|x| ((1.0-(x.powi(2))).sqrt()-0.7).abs(), 0.0, 1.0, 1e-6));
 }

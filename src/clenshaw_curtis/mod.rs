@@ -88,4 +88,6 @@ mod tests {
     unit_test!(demo_bad_function1_works = |x| (1.0 - x).powf(0.99); 0.0..1.0; 1e-6 => 0.50251256281407035);
     unit_test!(demo_bad_function2_works = |x| x.abs(); -1.0..1.0; 1e-6 => 1.0; 257);
     unit_test!(demo_bad_function3_works = |x| (0.5 - x.abs()).abs(); -1.0..1.0; 1e-6 => 0.5; 257);
+    unit_test!(demo_circle = |x| ((1.0-(x.powi(2))).sqrt()).abs(); -1.0..1.0; 1e-6 => 1.5707963267949);
+    unit_test!(demo_bad_circle = |x| ((1.0-(x.powi(2))).sqrt()-0.7).abs(); -1.0..1.0; 1e-4 => 0.420201353577392);
 }
