@@ -10,3 +10,6 @@ keywords = ["math", "mathematics", "numerics"]
 license = "BSD-2-Clause"
 
 [dependencies]
+
+[profile.bench]
+debug = true

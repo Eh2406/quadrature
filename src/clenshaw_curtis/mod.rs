@@ -61,8 +61,7 @@ fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
         max_x_idx = w.len();
 
         let last_integral = integral;
-        debug_assert_eq!(f_value[..w.len()].len(), w.len());
-        integral = f_value[..w.len()].iter().zip(w.iter()).fold(0.0, |sum, x| sum + (x.0 * x.1));
+        integral = f_value.iter().zip(w.iter()).fold(0.0, |sum, x| sum + (x.0 * x.1));
         error_estimate = (last_integral - integral).abs();
 
         if error_estimate < target_absolute_error {
