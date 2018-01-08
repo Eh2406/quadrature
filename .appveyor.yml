@@ -1,0 +1,51 @@
+environment:
+  global:
+  # TODO This is the Rust channel that build jobs will use by default but can be
+  # overridden on a case by case basis down below
+    RUST_VERSION: stable
+
+    # TODO Update this to match the name of your project.
+    CRATE_NAME: quadrature
+
+  # TODO These are all the build jobs. Adjust as necessary. Comment out what you
+  # don't need
+  matrix:
+    # MinGW
+    - TARGET: i686-pc-windows-gnu
+    - TARGET: x86_64-pc-windows-gnu
+
+    # MSVC
+    - TARGET: i686-pc-windows-msvc
+    - TARGET: x86_64-pc-windows-msvc
+
+    # Testing other channels
+    - TARGET: x86_64-pc-windows-gnu
+      RUST_VERSION: nightly
+    - TARGET: x86_64-pc-windows-msvc
+      RUST_VERSION: nightly
+
+    - TARGET: i686-pc-windows-gnu
+      RUST_VERSION: 1.0.0
+    - TARGET: x86_64-pc-windows-gnu
+      RUST_VERSION: 1.0.0
+
+install:
+  - ps: >-
+      If ($Env:TARGET -eq 'x86_64-pc-windows-gnu') {
+        $Env:PATH += ';C:\msys64\mingw64\bin'
+      } ElseIf ($Env:TARGET -eq 'i686-pc-windows-gnu') {
+        $Env:PATH += ';C:\msys64\mingw32\bin'
+      }
+  - curl -sSf -o rustup-init.exe https://win.rustup.rs/
+  - rustup-init.exe -y --default-host %TARGET% --default-toolchain %RUST_VERSION%
+  - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
+  - rustc -Vv
+  - cargo -V
+test_script:
+  - cargo build --verbose --target %TARGET%
+  - cargo build --verbose --target %TARGET% --release
+  - cargo test --verbose --target %TARGET%
+  - cargo test --verbose --target %TARGET% --release
+
+# Building is done in the test phase, so we disable Appveyor's build phase.
+build: false
