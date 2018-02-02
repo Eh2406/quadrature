@@ -47,11 +47,11 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
 fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64
 {
-    let mut error_estimate = ::std::f64::MAX;
+    let mut error_estimate = ::core::f64::MAX;
     let mut num_function_evaluations = 1;
-    let mut current_delta = ::std::f64::MAX;
+    let mut current_delta = ::core::f64::MAX;
 
-    let mut integral = 2.0 * ::std::f64::consts::FRAC_PI_2 * f(0.0);
+    let mut integral = 2.0 * ::core::f64::consts::FRAC_PI_2 * f(0.0);
 
     for &weight in &WEIGHTS {
         let new_contribution = weight.iter()

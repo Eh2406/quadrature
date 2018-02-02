@@ -1,15 +1,18 @@
 [package]
-name = "quadrature"
-version = "0.1.2"
 authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
 description = "This provides several fast numerical integration methods. This library is pure safe rust, and cross-platform. The double exponential algorithm is naturally adaptive, and does not allocate."
-repository = "https://github.com/Eh2406/quadrature"
-readme = "README.md"
 documentation = "https://docs.rs/quadrature/"
 keywords = ["math", "mathematics", "numerics"]
 license = "BSD-2-Clause"
+name = "quadrature"
+readme = "README.md"
+repository = "https://github.com/Eh2406/quadrature"
+version = "0.1.2"
 
 [dependencies]
+num-traits = "0.1.42"
+
+[profile]
 
 [profile.bench]
 debug = true

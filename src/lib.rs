@@ -2,6 +2,9 @@
 //! It is a port of the [Fast Numerical Integration](https://www.codeproject.com/kb/recipes/fastnumericalintegration.aspx) from c++ to rust. The original code is by John D. Cook, and is licensed under the BSD.
 //!
 //! Other Algorithms are provided in modules.
+#![no_std]
+
+extern crate num_traits;
 
 #[macro_use]
 #[cfg(test)]
@@ -9,6 +12,7 @@ mod test_macro;
 
 pub mod double_exponential;
 pub mod clenshaw_curtis;
+mod traits;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Output {

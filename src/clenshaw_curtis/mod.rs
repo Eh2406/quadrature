@@ -3,6 +3,8 @@
 //! It also does not allocate on the heap, however it does use a `[f64; 129]` to store the function values. It has a hard coded maximum of approximately 257 function evaluations. This guarantees that the algorithm will return.
 //! The clenshaw curtis algorithm exactly integrates polynomials of order N. This implementation starts with an N of approximately 5 and increases up to an N of approximately 257. In general the error in the algorithm decreases exponentially in the number of function evaluations. In summery clenshaw curtis will in general use **more stack space** and **run slower** than the double exponential algorithm, unless clenshaw curtis can get the exact solution.
 
+use core::f64;
+
 mod constants;
 
 use self::constants::*;
@@ -45,13 +47,13 @@ pub fn integrate<F>(f: F, a: f64, b: f64, target_absolute_error: f64) -> Output
 fn integrate_core<F>(f: F, target_absolute_error: f64) -> Output
     where F: Fn(f64) -> f64
 {
-    let mut f_value = [::std::f64::NAN; 129];
+    let mut f_value = [::core::f64::NAN; 129];
     debug_assert_eq!(f_value.len(), ABCISSAS.len());
     let mut max_x_idx = 1;
     f_value[0] = f(0.0);
 
-    let mut error_estimate = ::std::f64::MAX;
-    let mut integral = ::std::f64::MAX;
+    let mut error_estimate = ::core::f64::MAX;
+    let mut integral = ::core::f64::MAX;
     for &w in WEIGHTS.iter() {
         for (v, &x) in f_value[max_x_idx..w.len()]
             .iter_mut()
