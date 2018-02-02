@@ -1,3 +1,5 @@
+#![no_std]
+
 extern crate quadrature;
 
 use quadrature::clenshaw_curtis::integrate;

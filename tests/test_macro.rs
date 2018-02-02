@@ -5,7 +5,7 @@ macro_rules! unit_test {
     #[test]
     fn $name() {
         let o = integrate($inta, $lim.start, $lim.end, $eps);
-        println!("\n{:#?}", o);
+        //println!("\n{:#?}", o);
         assert!(o.num_function_evaluations == $max,
                 "num_function_evaluations is not maxed out. evaluations: {:#?}, max: {:#?}",
                 o.num_function_evaluations,
@@ -20,7 +20,7 @@ macro_rules! unit_test {
     #[test]
     fn $name() {
         let o = integrate($inta, $lim.start, $lim.end, $eps);
-        println!("\n{:#?}", o);
+        //println!("\n{:#?}", o);
         assert!(o.error_estimate <= $eps,
                 "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
                 o.error_estimate,
@@ -35,7 +35,7 @@ macro_rules! unit_test {
     #[test]
     fn $name() {
         let o = integrate($inta, $lim.start, $lim.end, $eps);
-        println!("\n{:#?}", o);
+        //println!("\n{:#?}", o);
         assert!(o.error_estimate <= $eps,
                 "error_estimate larger then asked. estimate: {:#?}, asked: {:#?}",
                 o.error_estimate,
