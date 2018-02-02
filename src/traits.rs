@@ -1,5 +1,3 @@
-use core::mem;
-use core::num::FpCategory;
 use core::ops::Neg;
 
 use num_traits::Num;
@@ -35,18 +33,6 @@ pub trait BasicFloat: Num + Neg<Output = Self> + PartialOrd + Copy {
     fn is_finite(self) -> bool {
         !(self.is_nan() || self.is_infinite())
     }
-
-    /// Returns `true` if the number is neither zero, infinite, subnormal or NaN.
-    #[inline]
-    fn is_normal(self) -> bool {
-        self.classify() == FpCategory::Normal
-    }
-
-    /// Returns the floating point category of the number. If only one property
-    /// is going to be tested, it is generally faster to use the specific
-    /// predicate instead.
-    #[inline]
-    fn classify(self) -> FpCategory;
 
     /// Computes the absolute value of `self`. Returns `BasicFloat::nan()` if the
     /// number is `BasicFloat::nan()`.
@@ -125,14 +111,6 @@ pub trait BasicFloat: Num + Neg<Output = Self> + PartialOrd + Copy {
         }
         acc
     }
-
-    /// Converts to degrees, assuming the number is in radians.
-    #[inline]
-    fn to_degrees(self) -> Self;
-
-    /// Converts to radians, assuming the number is in degrees.
-    #[inline]
-    fn to_radians(self) -> Self;
 }
 
 impl BasicFloat for f32 {
@@ -145,25 +123,6 @@ impl BasicFloat for f32 {
     fn nan() -> Self {
         ::core::f32::NAN
     }
-    fn classify(self) -> FpCategory {
-        const EXP_MASK: u32 = 0x7f800000;
-        const MAN_MASK: u32 = 0x007fffff;
-
-        let bits: u32 = unsafe { mem::transmute(self) };
-        match (bits & MAN_MASK, bits & EXP_MASK) {
-            (0, 0) => FpCategory::Zero,
-            (_, 0) => FpCategory::Subnormal,
-            (0, EXP_MASK) => FpCategory::Infinite,
-            (_, EXP_MASK) => FpCategory::Nan,
-            _ => FpCategory::Normal,
-        }
-    }
-    fn to_degrees(self) -> Self {
-        self * (180.0 / ::core::f32::consts::PI)
-    }
-    fn to_radians(self) -> Self {
-        self * (::core::f32::consts::PI / 180.0)
-    }
 }
 
 impl BasicFloat for f64 {
@@ -175,24 +134,5 @@ impl BasicFloat for f64 {
     }
     fn nan() -> Self {
         ::core::f64::NAN
-    }
-    fn classify(self) -> FpCategory {
-        const EXP_MASK: u64 = 0x7ff0000000000000;
-        const MAN_MASK: u64 = 0x000fffffffffffff;
-
-        let bits: u64 = unsafe { mem::transmute(self) };
-        match (bits & MAN_MASK, bits & EXP_MASK) {
-            (0, 0) => FpCategory::Zero,
-            (_, 0) => FpCategory::Subnormal,
-            (0, EXP_MASK) => FpCategory::Infinite,
-            (_, EXP_MASK) => FpCategory::Nan,
-            _ => FpCategory::Normal,
-        }
-    }
-    fn to_degrees(self) -> Self {
-        self * (180.0 / ::core::f64::consts::PI)
-    }
-    fn to_radians(self) -> Self {
-        self * (::core::f64::consts::PI / 180.0)
     }
 }
