@@ -9,6 +9,10 @@ documentation = "https://docs.rs/quadrature/"
 keywords = ["math", "mathematics", "numerics"]
 license = "MIT/Apache-2.0"
 
+[badges]
+appveyor = { repository = "Eh2406/quadrature" }
+travis-ci = { repository = "Eh2406/quadrature", branch = "master" }
+
 [dependencies]
 
 [profile.bench]

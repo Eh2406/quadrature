@@ -24,5 +24,5 @@ I have been testing against `rust 1.0` with:
 > cargo test
 > cargo bench
 ```
-It is also tested on travis [![Build Status](https://travis-ci.org/Eh2406/quadrature.svg?branch=master)](https://travis-ci.org/Eh2406/quadrature).
+It is also tested on travis [![Build Status](https://travis-ci.org/Eh2406/quadrature.svg?branch=master)](https://travis-ci.org/Eh2406/quadrature) and appver [![Build status](https://ci.appveyor.com/api/projects/status/8ua1boec122txy35?svg=true)](https://ci.appveyor.com/project/Eh2406/quadrature).
 I think bumping rust version is a breaking change, and will be respected in semver.
