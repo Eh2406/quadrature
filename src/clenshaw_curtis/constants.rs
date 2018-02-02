@@ -402,7 +402,7 @@ mod tests {
     fn total_weights() {
         for &w in WEIGHTS.iter() {
             let s = 2.0 * w.iter().fold(0.0, |sum, x| sum + x) - w[0];
-            println! {"{:#?}", s};
+            //println! {"{:#?}", s};
             assert!((s - 2.0).abs() <= 1e-13);
         }
     }

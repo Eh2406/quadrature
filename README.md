@@ -16,9 +16,9 @@ The clenshaw curtis algorithm exactly integrates polynomials of order N. This im
 
 Testing
 ----
-I have been testing against `rust 1.0` with:
+I have been testing against `rust 1.8` with:
 ```cmd
-> rustup override set 1.0.0
+> rustup override set 1.8.0
 > cargo test
 > rustup override set nightly
 > cargo test
