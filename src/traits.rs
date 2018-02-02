@@ -1,3 +1,6 @@
+// Parts of this code were taken from the Rust core library, distributed under
+// the terms of both the MIT license and the Apache License (Version 2.0).
+
 use core::ops::Neg;
 
 use num_traits::Num;
