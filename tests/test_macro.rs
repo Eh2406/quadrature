@@ -1,3 +1,5 @@
+#![allow(unused_macros)]
+
 macro_rules! unit_test {
 ($name:ident = $inta:expr ; $lim:expr; $eps:expr => $out:expr; $max:expr) => (
     #[test]

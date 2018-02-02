@@ -6,10 +6,6 @@
 
 extern crate num_traits;
 
-#[macro_use]
-#[cfg(test)]
-mod test_macro;
-
 pub mod double_exponential;
 pub mod clenshaw_curtis;
 mod traits;
