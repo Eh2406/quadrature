@@ -7,7 +7,7 @@ repository = "https://github.com/Eh2406/quadrature"
 readme = "README.md"
 documentation = "https://docs.rs/quadrature/"
 keywords = ["math", "mathematics", "numerics"]
-license = "BSD-2-Clause"
+license = "MIT/Apache-2.0"
 
 [dependencies]
 
