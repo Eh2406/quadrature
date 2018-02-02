@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - re-licensed under "MIT/Apache-2.0"
+- support `no_std`, requiring at least Rust 1.8
 
 ## [0.1.2] - 2017-01-09
 ### Added
