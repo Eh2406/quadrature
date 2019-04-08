@@ -7,7 +7,7 @@ categories = ["science", "no-std"]
 name = "quadrature"
 readme = "README.md"
 repository = "https://github.com/Eh2406/quadrature"
-version = "0.1.2"
+version = "0.2.0"
 license = "MIT/Apache-2.0"
 
 [badges]
