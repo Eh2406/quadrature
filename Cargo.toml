@@ -3,6 +3,7 @@ authors = ["Jacob Finkelman <Eh2406@wayne.edu>"]
 description = "This provides several fast numerical integration methods. This library is pure safe rust, and cross-platform. The double exponential algorithm is naturally adaptive, and does not allocate."
 documentation = "https://docs.rs/quadrature/"
 keywords = ["math", "mathematics", "numerics"]
+categories = ["science", "no-std"]
 name = "quadrature"
 readme = "README.md"
 repository = "https://github.com/Eh2406/quadrature"
