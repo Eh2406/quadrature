@@ -5,10 +5,12 @@
 #![no_std]
 
 extern crate num_traits;
+#[cfg(feature = "std")]
+extern crate std;
 
+#[cfg(feature = "std")]
 pub mod double_exponential;
 pub mod clenshaw_curtis;
-mod traits;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Output {
@@ -27,4 +29,7 @@ impl Output {
     }
 }
 
+#[cfg(feature = "std")]
 pub use double_exponential::integrate;
+#[cfg(not(feature = "std"))]
+pub use clenshaw_curtis::integrate;

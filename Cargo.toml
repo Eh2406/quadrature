@@ -14,9 +14,13 @@ appveyor = { repository = "Eh2406/quadrature" }
 travis-ci = { repository = "Eh2406/quadrature", branch = "master" }
 
 [dependencies]
-num-traits = "0.2"
+num-traits = { version = "0.2", default-features = false }
 
 [profile]
 
 [profile.bench]
 debug = true
+
+[features]
+default = ["std"]
+std = [ "num-traits/std" ]
