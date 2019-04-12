@@ -391,6 +391,8 @@ pub const WEIGHTS: [&'static [f64]; 7] =
 
 #[cfg(test)]
 mod tests {
+    use ::num_traits::float::FloatCore;
+
     use super::*;
 
     #[test]
